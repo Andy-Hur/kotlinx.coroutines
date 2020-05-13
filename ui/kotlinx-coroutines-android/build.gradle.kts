@@ -57,9 +57,6 @@ tasks.test {
     }
 }
 
-tasks.withType<DokkaTask>().configureEach {
-    externalDocumentationLink(delegateClosureOf<ExternalDocumentationLink.Builder> {
-        url = URL("https://developer.android.com/reference/")
-        packageListUrl = projectDir.toPath().resolve("package.list").toUri().toURL()
-    })
-}
+externalDocumentationLink(
+    url = "https://developer.android.com/reference/"
+)
