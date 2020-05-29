@@ -6,42 +6,28 @@
 
 apply plugin: 'org.jetbrains.kotlin.js'
 
-kotlin {
-    js {
-        jsMain {
-            dependencies {
-                api "org.jetbrains.kotlinx:kotlinx-html-js:$html_version"
-            }
-        }
-    }
-}
-
-kotlin.sourceSets {
-    main.kotlin.srcDirs = ['src']
-    test.kotlin.srcDirs = ['test']
-    main.resources.srcDirs = ['resources']
-    test.resources.srcDirs = ['test-resources']
-}
-
 dependencies {
-    api "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
-    testApi "org.jetbrains.kotlin:kotlin-test-js:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
+    testImplementation "org.jetbrains.kotlin:kotlin-test-js:$kotlin_version"
 }
 
-println tasks.toListString()
-def compileJsLegacy = tasks.hasProperty("compileKotlinJsLegacy")
-        ? compileKotlinJsLegacy
-        : compileKotlinJs
+kotlin {
+    js(LEGACY) {
+        moduleName = project.name - "-js"
+    }
 
-compileJsLegacy.configure {
-    kotlinOptions.metaInfo = true
-    kotlinOptions.sourceMap = true
-    kotlinOptions.moduleKind = 'umd'
-
-    kotlinOptions {
-        // drop -js suffix from outputFile
-        def baseName = project.name - "-js"
-        outputFile = new File(outputFile.parent, baseName + ".js")
+    sourceSets {
+        main.kotlin.srcDirs = ['src']
+        test.kotlin.srcDirs = ['test']
+        main.resources.srcDirs = ['resources']
+        test.resources.srcDirs = ['test-resources']
     }
 }
 
+tasks.withType(compileKotlinJs.getClass()) {
+    kotlinOptions {
+        moduleKind = "umd"
+        sourceMap = true
+        metaInfo = true
+    }
+}
