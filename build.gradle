@@ -178,6 +178,7 @@ allprojects {
 configure(subprojects.findAll { !sourceless.contains(it.name) && it.name != coreModule }) {
     evaluationDependsOn(":$coreModule")
     def platform = PlatformKt.platformOf(it)
+    println "Applying for: $it.name"
     apply from: rootProject.file("gradle/compile-${platform}.gradle")
     dependencies {
         // See comment below for rationale, it will be replaced with "project" dependency

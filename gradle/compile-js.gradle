@@ -6,6 +6,16 @@
 
 apply plugin: 'org.jetbrains.kotlin.js'
 
+kotlin {
+    js {
+        jsMain {
+            dependencies {
+                api "org.jetbrains.kotlinx:kotlinx-html-js:$html_version"
+            }
+        }
+    }
+}
+
 kotlin.sourceSets {
     main.kotlin.srcDirs = ['src']
     test.kotlin.srcDirs = ['test']
@@ -14,22 +24,24 @@ kotlin.sourceSets {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
-    testCompile "org.jetbrains.kotlin:kotlin-test-js:$kotlin_version"
+    api "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlin_version"
+    testApi "org.jetbrains.kotlin:kotlin-test-js:$kotlin_version"
 }
 
-tasks.withType(compileKotlinJs.getClass()) {
-    kotlinOptions {
-        moduleKind = "umd"
-        sourceMap = true
-        metaInfo = true
-    }
-}
+println tasks.toListString()
+def compileJsLegacy = tasks.hasProperty("compileKotlinJsLegacy")
+        ? compileKotlinJsLegacy
+        : compileKotlinJs
 
-compileKotlinJs {
+compileJsLegacy.configure {
+    kotlinOptions.metaInfo = true
+    kotlinOptions.sourceMap = true
+    kotlinOptions.moduleKind = 'umd'
+
     kotlinOptions {
         // drop -js suffix from outputFile
         def baseName = project.name - "-js"
         outputFile = new File(outputFile.parent, baseName + ".js")
     }
 }
+

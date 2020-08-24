@@ -2,14 +2,20 @@
  * Copyright 2016-2020 JetBrains s.r.o. Use of this source code is governed by the Apache 2.0 license.
  */
 
-apply plugin: 'kotlin-dce-js'
 apply from: rootProject.file('gradle/node-js.gradle')
+apply plugin: 'org.jetbrains.kotlin.js'
 
-dependencies {
-    compile "org.jetbrains.kotlinx:kotlinx-html-js:$html_version"
+kotlin {
+    js(LEGACY) {
+        jsMain {
+            dependencies {
+                compile "org.jetbrains.kotlinx:kotlinx-html-js:$html_version"
+            }
+        }
+    }
 }
 
-compileKotlinJs {
+compileKotlin2Js {
     kotlinOptions {
         main = "call"
     }
